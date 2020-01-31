@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/style.css"/>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<body>
+
+<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">PreProject SpringBoot </a>
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="/logout">Logout</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="container-fluid">
+    <div class="row margin-top-3">
+        <div class="col-2">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                 aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-admin-tab" data-toggle="pill"
+                   href="#v-pills-admin" role="tab"
+                   aria-controls="v-pills-admin" aria-selected="true">Admin</a>
+                <a class="nav-link full-width-div" id="v-pills-user-tab" data-toggle="pill" href="#v-pills-user"
+                   role="tab"
+                   aria-controls="v-pills-user" aria-selected="false">User</a>
+            </div>
+        </div>
+        <div class="col-10">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-admin" role="tabpanel"
+                     aria-labelledby="v-pills-admin-tab">
+                    <h2>
+                        Admin panel
+                    </h2>
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-userstable-tab" data-toggle="tab"
+                               href="#nav-users-table" role="tab" aria-controls="nav-users-table" aria-selected="true">Users
+                                table</a>
+                            <a class="nav-item nav-link" id="nav-newuser-tab" data-toggle="tab" href="#nav-new-user"
+                               role="tab" aria-controls="nav-new-user" aria-selected="false">New User</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content margin-top-1" id="nav-tabContent">
+                        <!--Users table tab -->
+                        <div class="tab-pane fade show active" id="nav-users-table" role="tabpanel"
+                             aria-labelledby="nav-userstable-tab">
+                            <div class="table-responsive border">
+                                <table id="usersTable" class="table table-striped table-sm margin-top">
+                                    <thead>
+                                    <tr>
+                                        <b>All users</b>
+                                    </tr>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Login</th>
+                                        <th>Password</th>
+                                        <th>Role</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+
+
+
+                                        <!--<td>
+                                            <form th:action="@{/admin/delete}" method="POST">
+                                                <input type="hidden" th:value="${user.id}" name="id">
+                                                <input class="btn red" type="submit" value="Delete">
+                                            </form>
+                                        </td>
+                                    -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!--New user tab -->
+                        <div class="tab-pane fade col-lg-2" id="nav-new-user" role="tabpanel"
+                             aria-labelledby="nav-newuser-tab">
+
+                            <form>
+                                <label class="bold-font" for="userLoginAdd">Login:</label>
+                                <input class="form-control" type="text" name="login" id="userLoginAdd" placeholder="Login"
+                                       required autofocus>
+                                <label class="bold-font" for="userPasswordAdd">Password:</label>
+                                <input class="form-control" type="text" name="password" id="userPasswordAdd"
+
+                                       placeholder="Password" required>
+                                <label class="bold-font"> Role:</label><br>
+                                <input class="checkbox" type="checkbox" name="roleAdmin" value="admin">admin<br>
+                                <input class="checkbox" type="checkbox" name="roleUser" value="user">user<br>
+                                <button class="btn btn-lg btn-primary btn-block sign-in-button col-lg-6 green"
+                                        type="button" onclick="addUser()">Save
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab">
+                    Hello User
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+<!--Edit user modal window -->
+      <div class="modal fade" id="editUser" tabindex="-1" role="dialog"
+           aria-labelledby="editUserLabel" aria-hidden="true" > <!--id+-->
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="editUserLabel">Edit user</h5>
+                      <button type="button" class="close" data-dismiss="modal"
+                              aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body mx-auto text-center">
+                      <form id="editUserForm"
+                            method="POST">
+                          <div class="form-group">
+                              <label for="userIdEdit"
+                                     class="col-form-label bold-font">ID</label>
+                              <input type="text" class="form-control" id="userIdEdit">
+                          </div>
+                          <div class="form-group">
+                              <label for="userLoginEdit"
+                                     class="col-form-label bold-font">Login</label>
+                              <input type="text" class="form-control" id="userLoginEdit" name="login">
+                          </div>
+                          <div class="form-group">
+                              <label for="userPasswordEdit"
+                                     class="col-form-label bold-font">Password</label>
+                              <input type="text" class="form-control" id="userPasswordEdit" name="password">
+                          </div>
+                          <div>
+                              <label class="bold-font col-form-label">
+                                  Role:</label><br>
+                              <input class="checkbox" type="checkbox" name="roleAdmin"
+                                     value="admin" id="checkboxAdminEdit"> admin <br>
+                              <input class="checkbox" type="checkbox" name="roleUser"
+                                     value="user" id="checkboxUserEdit"> user <br>
+                          </div>
+                      </form>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary"
+                                  data-dismiss="modal">Close
+                          </button>
+                          <button type="button"
+                                  class="btn btn-primary" onclick="updateUser()">Save
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+<!--form="editUserForm"-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="../static/js/main.js"></script>
+</body>
+
+</html>
