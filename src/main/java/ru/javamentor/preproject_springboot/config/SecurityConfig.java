@@ -60,7 +60,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(bCryptPasswordEncoder);
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -93,33 +92,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(ssoFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/static/**");
-    }
-
-    @Bean
-    public PrincipalExtractor principalExtractor(UserService userService) {
-        return map -> {
-            map.forEach((e,v)->{
-                System.out.println(e + " ::: " + v);
-            });
-            User user = userService.getUserByLogin("1").get();
-            System.out.println(user);
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
-            return user;
-        };
-    }
-
-    @Bean
-    public FilterRegistrationBean oAuth2ClientFilterRegistration(OAuth2ClientContextFilter oAuth2ClientContextFilter)
-    {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(oAuth2ClientContextFilter);
-        registration.setOrder(-100);
-        return registration;
-    }
-
     private Filter ssoFilter(){
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oAuth2ClientContext);
@@ -131,8 +103,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         googleFilter.setTokenServices(tokenService);
         return googleFilter;
     }
-
-
 
     @Bean
     @ConfigurationProperties("security.oauth2.client")
@@ -148,4 +118,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new ResourceServerProperties();
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/static/**");
+    }
+    
 }
