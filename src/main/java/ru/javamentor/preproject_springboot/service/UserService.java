@@ -14,8 +14,6 @@ public interface UserService {
 
     boolean deleteUserById(long id);
 
-//  boolean validateUser(User user);
-
     Optional<User> getUserByLogin(String login);
 
     Optional<User> getUserByGoogleId(String id);

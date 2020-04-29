@@ -1,13 +1,21 @@
 $(document).ready(function () {
-    $.get("/admin/users", function (data, status) {
-        for (i = 0; i < data.length; i++) {
-            renderUsersTable(data[i]);
-        }
-    });
+    renderUsersTable();
 });
 
-function renderUsersTable(user) {
+function renderUsersTable() {
     var tBody = document.getElementById("usersTableBody");
+    var div = document.createElement('div');
+    div.id = 'tableDiv';
+    $.get("/admin/users", function (data, status) {
+        for (i = 0; i < data.length; i++) {
+            renderUserRow(data[i]);
+        }
+    });
+    tBody.appendChild(div);
+}
+
+function renderUserRow(user) {
+    var div = document.getElementById("tableDiv");
     var tr = document.createElement('tr');
     var tdId = document.createElement('td');
     tdId.innerHTML = user.id;
@@ -46,7 +54,12 @@ function renderUsersTable(user) {
     tdInputDelete.appendChild(inputDelete);
     tr.appendChild(tdInputDelete);
 
-    tBody.appendChild(tr);
+    div.appendChild(tr);
+}
+
+function refreshTable() {
+    $('#tableDiv').remove();
+    renderUsersTable();
 }
 
 function getRolesNames(user) {
@@ -99,7 +112,7 @@ function addUser() {
             roleUser: roleUser
         },
         function () {
-            location.reload();
+            refreshTable();
         });
 }
 
@@ -109,7 +122,7 @@ function deleteUserById(id) {
         type: "DELETE",
         data: {id: id},
         success: function () {
-            location.reload();
+            refreshTable();
         }
     });
 }
@@ -136,7 +149,7 @@ function updateUser() {
             roleUser: roleUser
         },
         success: function () {
-            location.reload();
+            refreshTable();
         }
     });
 }

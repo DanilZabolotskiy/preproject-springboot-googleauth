@@ -12,20 +12,18 @@ import java.util.Set;
 public class User implements UserDetails {
 
     @Id
-    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="login", unique = true)
+    @Column(unique = true)
     private String login;
 
-    @Column(name="password")
     private String password;
 
-    @Column(name="googleID")
+    @Column(name="google_id")
     private String googleID;
 
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role_map",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})

@@ -1,15 +1,7 @@
 package ru.javamentor.preproject_springboot.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PageController {
@@ -19,7 +11,7 @@ public class PageController {
         return "index";
     }
 
-    @RequestMapping(path = "/admin", method = {RequestMethod.GET, RequestMethod.POST})
+    @GetMapping("/admin")
     public String getAdminPage() {
         return "admin";
     }
@@ -27,19 +19,6 @@ public class PageController {
     @GetMapping("/user")
     public String getUserPage() {
         return "user";
-    }
-
-    @GetMapping("/")
-    public String index() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated()) {
-            Set<String> roleNAme = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
-            if (roleNAme.contains("admin")) {
-                return "redirect:/admin";
-            } else
-                return "redirect:/user";
-        }
-        return "redirect:/login";
     }
 
 }

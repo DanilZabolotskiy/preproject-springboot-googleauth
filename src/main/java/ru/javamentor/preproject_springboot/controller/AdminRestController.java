@@ -7,13 +7,14 @@ import ru.javamentor.preproject_springboot.model.Role;
 import ru.javamentor.preproject_springboot.model.User;
 import ru.javamentor.preproject_springboot.service.RoleService;
 import ru.javamentor.preproject_springboot.service.UserService;
+import ru.javamentor.preproject_springboot.util.Util;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
 public class AdminRestController {
-
 
     private final UserService userService;
     private final RoleService roleService;
@@ -43,19 +44,18 @@ public class AdminRestController {
     public void updateUser(User user,
                            @RequestParam(value = "roleAdmin", required = false) String roleAdmin,
                            @RequestParam(value = "roleUser", required = false) String roleUser){
-        Set<Role> roles = createRoleSet(roleAdmin, roleUser);
+        Set<Role> roles = roleService.findRolesByName(roleAdmin, roleUser);
         user.setRoles(roles);
         userService.updateUser(user);
     }
 
     @PostMapping("/admin/user")
-    public void addUser(@RequestParam(value = "login") String login,
-                          @RequestParam(value = "password") String password,
+    public void addUser(User user,
                           @RequestParam(value = "roleAdmin", required = false) String roleAdmin,
                           @RequestParam(value = "roleUser", required = false) String roleUser) {
 
-        Set<Role> roles = createRoleSet(roleAdmin, roleUser);
-        User user = new User(login, password, roles);
+        Set<Role> roles = roleService.findRolesByName(roleAdmin, roleUser);
+        user.setRoles(roles);
         userService.addUser(user);
     }
 
@@ -66,12 +66,4 @@ public class AdminRestController {
                 .getPrincipal();
     }
 
-    private Set<Role> createRoleSet(String... roleName) {
-        return Stream.of(roleName).
-                filter(Objects::nonNull).
-                map(roleService::getRoleByName).
-                filter(Optional::isPresent).
-                map(Optional::get).
-                collect(Collectors.toSet());
-    }
 }
